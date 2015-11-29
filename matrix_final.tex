@@ -5,6 +5,8 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{amsthm}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
 
 \newtheorem{proposition}{Proposition}
 \theoremstyle{plain}
@@ -21,10 +23,10 @@
 
 \section{Self Assessment}
 
-\begin{tabular}{c|c}
+\begin{tabular}{c|l}
 Problem 1 & 2.\\
 Problem 2 & 2.\\
-Problem 3 & 2.\\
+Problem 3 & 2 (including all the 8 questions).\\
 Problem 4 & 2.\\
 \end{tabular}
 
@@ -144,16 +146,119 @@ That is, $X_R$ must be strictly upper triangular and Toeplitz. There are $n$ var
 $$a_0, a_{-1}, a_{-2}, \cdots, a_{-(n-1)}.$$
 Thus the dimension of the solution space is $n$.
 
-d) Find all solutions $Y_L$ of the equation $Y_LZ_n^T - Z_n^TT_L = 0$. What is the dimension of the solution space?
+d) Find all solutions $Y_L$ of the equation $Y_LZ_n^T - Z_n^TY_L = 0$. What is the dimension of the solution space?
 
-{\it Solution.} It suffices to solve the equation $Z_nY_L^T - T_L^T Z_n = 0$. By c), we know $Y_L^T$ must be strictly upper triangular Toeplitz. Hence the solution $Y_L$ must be strictly lower triangular Toeplitz. The dimension of the solution space is still $n$.
+{\it Solution.} It suffices to solve the equation $Z_nY_L^T - Y_L^T Z_n = 0$. By c), we know $Y_L^T$ must be strictly upper triangular Toeplitz. Hence the solution $Y_L$ must be strictly lower triangular Toeplitz. The dimension of the solution space is still $n$.
 
 e) Consider the equation $XZ_n - Z_nX = Y$. Show that this equation has a solution $X$ iff $\mathrm{trace}(Y_L^TY)=0$, where $Y_L$ is from part d).
 
 \begin{proof}
+We first show that if the equation has a solution $X$, then the trace of $Y_L^TY$ is zero.
+Clearly the most left-bottom entry of $Y$ must be 0: $Y_{n,1} = 0$, since the $(n,1)$ entry of $XZ_n - Z_nX$ must be 0 for any $X$. That is,
+$$Y=\m{
+-x_{2,1} & x_{1,1}-x_{2,2} & x_{1,2}-x_{2,3} & \cdots & x_{1,n-1}-x_{2,n} \\
+-x_{3,1} & x_{2,1}-x_{3,2} & x_{2,2}-x_{3,3} & \cdots & x_{2,n-1}-x_{3,n} \\
+-x_{4,1} & x_{3,1}-x_{4,2} & x_{3,2}-x_{4,3} & \cdots & x_{3,n-1}-x_{4,n} \\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+-x_{n,1} & x_{n-1,1}-x_{n,2} & x_{n-1,2}-x_{n,3} & \cdots & x_{n-1,n-1}-x_{n,n} \\
+0 & x_{n,1} & x_{n,2}  & \cdots & x_{n,n-1} \\
+}.$$
+Note that the trace of $Y$ is zero. Since $Y_L^T$ is strictly upper triangular Toeplitz, the trace of $Y_L^TY$ is 
+$$\mathrm{trace}(Y_L^TY) = (Y_L)_{1,1}\mathrm{trace}(Y) = 0.$$
 
+We next show that if $\mathrm{trace}(Y_L^TY)=0$, then the equation must have a solution $X$. Since
+$$0 = \mathrm{trace}(Y_L^TY) = \sum_{i,j} (Y_L)_{j,i}Y_{j,i} = \sum_{i\leq j}(Y_L)_{j,i}Y_{j,i},$$
+and there are $n$ independent variables in $Y_L$, to make sure the sum is zero for arbitrary $Y_L$,
+we have $\mathrm{trace}(Y)=0$ and $Y_{n,1}=0$. Thus we can write $Y$ as
+$$Y=\m{
+-x_{2,1} & x_{1,1}-x_{2,2} & x_{1,2}-x_{2,3} & \cdots & x_{1,n-1}-x_{2,n} \\
+-x_{3,1} & x_{2,1}-x_{3,2} & x_{2,2}-x_{3,3} & \cdots & x_{2,n-1}-x_{3,n} \\
+-x_{4,1} & x_{3,1}-x_{4,2} & x_{3,2}-x_{4,3} & \cdots & x_{3,n-1}-x_{4,n} \\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+-x_{n,1} & x_{n-1,1}-x_{n,2} & x_{n-1,2}-x_{n,3} & \cdots & x_{n-1,n-1}-x_{n,n} \\
+0 & x_{n,1} & x_{n,2}  & \cdots & x_{n,n-1} \\
+}.$$
+Here the $x_{i,j}$ give the solution $X$. Note that $x_{1,n}$ has no requirement and thus can be any real number. Hence there are $n^2$ variables, but there are only $n^2-2$ independent linear equations. Thus the nullspace of $X$ has dimension of 2. That is, all the solutions are in the form $X+\lambda Y_L+\theta K$, where $\lambda,\theta\in\mathbb{R}$ and $K$ has only one non zero entry: $K_{1,n}=1$.
 \end{proof}
 
+f) Give an efficient algorithm to find a particular solution $X_p$ such that $X_pZ_n - Z_nX_p = Y$, assuming $Y$ is such that a solution exists.
+
+{\it Solution.} The construction of $Y$ given in e) motivates Algorithm \ref{alg}.
+
+\begin{algorithm}
+\centering
+\begin{minipage}{0.95\textwidth}
+\begin{algorithmic}
+\Require Matrix $Y_{n\times n}$.
+\Ensure Matrix $(X_p)_{n\times n}$ s.t. $X_pZ_n - Z_nX_p = Y$.
+\For {$2\leq i \leq n$}
+	\State $x_{i,1} \gets -Y_{i-1,1}$,
+\EndFor
+\For {$2\leq i \leq n$}
+	\State $x_{n,i} \gets Y_{n,i+1}$,
+\EndFor
+\For {$1\leq i \leq n-1$}
+	\State $x_{1,i} \gets 1$,
+\EndFor
+\For {$2\leq i \leq n$}
+	\For {$2\leq j\leq n$}
+		\State $x_{i,j} \gets x_{i-1,j-1} - Y_{i-1,j}$,
+	\EndFor
+\EndFor
+\State $x_{1,n} \gets 1$,
+\State {\bf return} $X := (x_{i,j})_{n\times n}$.
+\end{algorithmic}
+\end{minipage}
+\caption{The algorithm to compute one specific solution $X_p$ such that $X_pZ_n - Z_nX_p = Y$.}
+\label{alg}
+\end{algorithm}
+
+It is easy to see the complexity of Algorithm \ref{alg} is $O(n^2)$.
+
+g) Find all solutions $X$ of $XZ_n - Z_nX=Y$, assuming that $Y$ is such that a solution exists.
+
+{\it Solution.} Algorithm \ref{alg} in f) gives one specific solution $X_p$ s.t. $(X_p)_{1,i}=1$ for $1\leq i\leq n$. The discussions in e) give the fact that all the solutions are in the form $X = X_p + \lambda Y_L + \theta K$, in which $\lambda,\theta\in\mathbb{R}$ and $K$ has only one non zero entry: $K_{1,n}=1$.
+
+h) Given $Y$, show that the equation $X- Z_n^T XZ_n = Y$ always has a unique solution $X$ and give an efficient algorithm to compute $X$ from $Y$.
+
+\begin{proof}
+Let $X = (x_{i,j})_{n\times n}$. Hence based on $X- Z_n^T XZ_n = Y$, we have
+$$Y=\m{
+x_{1,1} & x_{1,2} & x_{1,3} & \cdots & x_{1,n} \\
+x_{2,1} & x_{2,2}-x_{1,1} & x_{2,3}-x_{1,2} & \cdots & x_{2,n}-x_{1,n-1} \\
+x_{3,1} & x_{3,2}-x_{2,1} & x_{3,3}-x_{2,2} & \cdots & x_{3,n}-x_{2,n-1} \\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+x_{n,1} & x_{n,2}-x_{n-1,1} & x_{n,3}-x_{n-1,2} & \cdots & x_{n,n}-x_{n-1,n-1} \\
+}.$$
+It is easy to see that the solution of $X$ can be uniquely determined given the matrix $Y$ above. The computing algorithm can be given analogously to Algorithm \ref{alg}. That is Algorithm \ref{alg2}.
+
+\begin{algorithm}
+\centering
+\begin{minipage}{0.95\textwidth}
+\begin{algorithmic}
+\Require Matrix $Y_{n\times n}$.
+\Ensure Matrix $X_{n\times n}$ s.t. $X- Z_n^T XZ_n = Y$.
+\For {$1\leq i \leq n$}
+	\State $x_{i,1} \gets Y_{i,1}$,
+\EndFor
+\For {$2\leq i \leq n$}
+	\State $x_{1,i} \gets Y_{1,i}$,
+\EndFor
+\For {$2\leq i \leq n$}
+	\For {$2\leq j\leq n$}
+		\State $x_{i,j} \gets Y_{i,j} + x_{i-1,j-1}$,
+	\EndFor
+\EndFor
+\State {\bf return} $X_p := (x_{i,j})_{n\times n}$.
+\end{algorithmic}
+\end{minipage}
+\caption{The algorithm to compute one specific solution $X$ s.t. $X- Z_n^T XZ_n = Y$.}
+\label{alg2}
+\end{algorithm}
+
+It is easy to see the complexity of Algorithm \ref{alg2} is also $O(n^2)$.
+
+\end{proof}
 
 \section{Problem 4}
 Find the Jordan decomposition of the $n\times n$ lower-triangular matrix
