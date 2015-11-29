@@ -1,0 +1,264 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx}
+\usepackage{fullpage}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+\newtheorem{proposition}{Proposition}
+\theoremstyle{plain}
+
+\begin{document}
+
+\title{ECE 210A: Final Track 2}
+\author{Shiyu Ji}
+\date{\today}
+\maketitle
+
+\newcommand{\m}[1]{\begin{pmatrix}#1\end{pmatrix}}
+\newcommand{\rank}[1]{\operatorname{rank}(#1)}
+
+\section{Self Assessment}
+
+\begin{tabular}{c|c}
+Problem 1 & 2.\\
+Problem 2 & 2.\\
+Problem 3 & 2.\\
+Problem 4 & 2.\\
+\end{tabular}
+
+\section{Problem 1}
+Let $p\in\mathbb{R}^n$ such that $p_i > 0$ for $i=1,\cdots,n$, and $\sum_{i=1}^n p_i = 1$. Show that
+$$n^3 + 2n + \frac{1}{n} \leq \sum_{i=1}^n \left(p_i + \frac{1}{p_i} \right)^2.$$
+
+\begin{proof}
+Clearly,
+$$\sum_{i=1}^n \left(p_i + \frac{1}{p_i} \right)^2 = \sum_{i=1}^n \left( p_i^2 + 2 + \frac{1}{p_i^2} \right) = 2n + \sum_{i=1}^n \left(p_i^2+\frac{1}{p_i^2}\right).$$
+To compute the minimum, we use Lagrange multiplier. That is, let
+$$\mathcal{L}(p_1,p_2,\cdots,p_n, \lambda) = \sum_{i=1}^n \left(p_i^2+\frac{1}{p_i^2}\right) + \lambda \sum_{i=1}^n p_i^2.$$
+Here $\lambda$ can be any real number. 
+Then let
+$$\frac{\partial \mathcal{L}}{\partial p_i} = 2p_i - \frac{2}{p_i^3} + \lambda =0.$$
+Since for any $i$, $p_i>0$, we have for any $i$,
+$$2p_i^4 + \lambda p_i^3 -2 = 0.$$
+Note that denote $f(p) = 2p^4 + \lambda p^3 - 2$. Then $f(0) = -2$ and $f(1) = \lambda$. And $f'(p) = 8p^3 + 2\lambda p^2 > 0$ if $0<p<1$, i.e., $f$ monotonically increases over the unit interval. Thus if $\lambda > 0$, it is guaranteed that there is a unique maximum point over $0<p_i<1$ for any $i$. Since the above equation holds for any $i$, each $p_i$ takes the same value. Since $\sum_{i=1}^n p_i = 1$, we have 
+$$\forall i, p_i = 1/n.$$
+Thus
+$$\sum_{i=1}^n \left(p_i^2+\frac{1}{p_i^2}\right) \geq \sum_{i=1}^n \left( \frac{1}{n^2} + n^2\right) = n^3 + \frac{1}{n}.$$
+Hence we have shown
+$$n^3 + 2n + \frac{1}{n} \leq \sum_{i=1}^n \left(p_i + \frac{1}{p_i} \right)^2.$$
+The equality holds iff for any $i$, we have $p_i=1/n$.
+\end{proof}
+
+\section{Problem 2}
+Let $x\in\mathbb{R}^n$. Let $D$ be the $n\times n$ diagonal matrix with diagonal entries $D_{i,i} = (-1)^i$. Let $\lceil t\rceil$ denote the smallest integer bigger than or equal to $t$. Let $e\in \mathbb{R}^n$ such that $e_i=1$ for $i=1,\cdots,n$. Show that
+$$|e^Ta|^2 + |e^T Da|^2 \leq 2 \lceil \frac{n}{2}\rceil ||a||_2^2.$$
+
+\begin{proof}
+Firstly, we have
+$$e^T a = \sum_{i=1}^n a_i,\quad e^T Da = \sum_{i=1}^n (-1)^i a_i.$$
+Thus it suffices to show
+$$\left( \sum_{i=1}^n a_i \right)^2 + \left( \sum_{i=1}^n (-1)^i a_i \right)^2 \leq 2 \lceil \frac{n}{2}\rceil ||a||_2^2.$$
+On the other hand, we have
+$$\left( \sum_{i=1}^n a_i \right)^2 + \left( \sum_{i=1}^n (-1)^i a_i \right)^2
+=2\sum_{2|(i-j)}a_ia_j.$$
+Since $0\leq (a_i-a_j)^2 = a_i^2 + a_j^2 - 2a_ia_j$, we have
+$$2\sum_{2|(i-j)}a_ia_j \leq \sum_{2|(i-j)} (a_i^2 + a_j^2).$$
+We fix $i$, and see how many pairs $(i,j)$ are there satisfying $2|(i-j)$. If $i$ is odd, then $j$ must be odd, too. Similarly, if $i$ is even, so must be $j$. Hence the number of such pairs must be no more than $\lceil \frac{n}{2}\rceil$. Similar we can apply the same reasoning to $j$:
+$$\sum_{2|(i-j)} (a_i^2 + a_j^2)
+\leq \sum_{i} \left( \lceil \frac{n}{2} \rceil a_i^2 + \sum_{2|(i-j)} a_j^2 \right)
+= \sum_i \lceil \frac{n}{2} \rceil a_i^2 + \sum_i \sum_{2|(i-j)} a_j^2$$
+$$\leq \sum_i \lceil \frac{n}{2} \rceil a_i^2 + \sum_j \lceil \frac{n}{2} \rceil a_j^2
+= 2\lceil \frac{n}{2} \rceil ||a||_2^2.$$
+Thus we have shown the inequality as desired. Based on the proof, it is clear that the equality holds when $n$ is even and each $a_i$ has the identical value.
+\end{proof}
+
+\section{Problem 3}
+a) Let $T$ be an $n\times n$ Toeplitz matrix. Let $Z_n$ denote the $n\times n$ shift-up matrix. What is the maximum rank of the matrix $TZ_n - Z_nT$?
+
+{\it Solution.} 
+Let
+$$T = \m{
+a_{0} & a_{-1} & a_{-2} & \ldots & \ldots  &a_{-(n-1)}  \\
+  a_{1} & a_0  & a_{-1} &  \ddots   &  &  \vdots \\
+  a_{2}    & a_{1} & \ddots  & \ddots & \ddots& \vdots \\ 
+ \vdots &  \ddots & \ddots &   \ddots  & a_{-1} & a_{-2}\\
+ \vdots &         & \ddots & a_{1} & a_{0}&  a_{-1} \\
+a_{n-1} &  \ldots & \ldots & a_{2} & a_{1} & a_{0}
+}.$$
+Then
+$$TZ_n - Z_nT = \m{
+0&a_{0} & a_{-1} & a_{-2} & \ldots & \ldots    \\
+0&  a_{1} & a_0  & a_{-1} &  \ddots   &   \\
+0&  a_{2}    & a_{1} & \ddots  & \ddots & \ddots \\ 
+\vdots& \vdots &  \ddots & \ddots &   \ddots  & a_{-1} \\
+\vdots& \vdots &         & \ddots & a_{1} & a_{0} \\
+0&a_{n-1} &  \ldots & \ldots & a_{2} & a_{1} \\
+}-\m{
+  a_{1} & a_0  & a_{-1} &  \ddots   &  &  \vdots \\
+  a_{2}    & a_{1} & \ddots  & \ddots & \ddots& \vdots \\ 
+ \vdots &  \ddots & \ddots &   \ddots  & a_{-1} & a_{-2}\\
+ \vdots &         & \ddots & a_{1} & a_{0}&  a_{-1} \\
+a_{n-1} &  \ldots & \ldots & a_{2} & a_{1} & a_{0} \\
+0 & \cdots & \cdots & 0 & 0 & 0 \\
+}$$
+$$=\m{
+-a_1  & & & & \\
+-a_2 & & & & \\
+-a_3 & & & & \\
+\vdots & & & & \\
+-a_{n-1} & & & & \\
+0 & a_{n-1} & a_{n-2} & \cdots & a_2 & a_1 \\
+}.$$
+Thus the rank is still $n$ in general.
+
+b) Let $V$ be an $n\times n$ unit upper-triangular Toeplitz matrix. Show that $Z_n = VZ_n V^{-1}$.
+
+\begin{proof}
+It suffices to show $Z_nV = VZ_n$. Let
+$$V = \m{
+1& v_1 & v_2 & \cdots & v_{n-1} \\
+ & 1 & v_1 & \cdots & v_{n-2} \\
+ &  & 1 & \cdots & v_{n-3} \\
+ &  &  & \ddots & \vdots \\
+ &  &  &  & 1 \\
+}.$$
+It is clear that
+$$Z_nV = \m{
+&1& v_1 & v_2 & \cdots & v_{n-2} \\
+& & 1 & v_1 & \cdots & v_{n-3} \\
+& &  & 1 & \cdots & v_{n-4} \\
+& &  &  & \ddots & \vdots \\
+& &  &  &  & 1 \\
+& &  &  &  & \\
+} =VZ_n.$$
+\end{proof}
+
+c) Find all solutions $X_R$ of the equation $X_RZ_n - Z_nX_R = 0$. What is the dimension of the solution space?
+
+{\it Solution.} For any solution $X_R$, it is clear that $(X_R)_{i,j-1} = (X_R)_{i+1,j}$ for any $0\leq i \leq n-1$ and $1\leq j\leq n$. That is, $X_R$ must be a Toeplitz matrix.
+Based on a), for any solution $X_R$, we have 
+$$a_1 = a_2 = a_3 = \cdots = a_{n-1} = 0.$$
+That is, $X_R$ must be strictly upper triangular and Toeplitz. There are $n$ variables to define the solution $X_R$:
+$$a_0, a_{-1}, a_{-2}, \cdots, a_{-(n-1)}.$$
+Thus the dimension of the solution space is $n$.
+
+d) Find all solutions $Y_L$ of the equation $Y_LZ_n^T - Z_n^TT_L = 0$. What is the dimension of the solution space?
+
+{\it Solution.} It suffices to solve the equation $Z_nY_L^T - T_L^T Z_n = 0$. By c), we know $Y_L^T$ must be strictly upper triangular Toeplitz. Hence the solution $Y_L$ must be strictly lower triangular Toeplitz. The dimension of the solution space is still $n$.
+
+e) Consider the equation $XZ_n - Z_nX = Y$. Show that this equation has a solution $X$ iff $\mathrm{trace}(Y_L^TY)=0$, where $Y_L$ is from part d).
+
+\begin{proof}
+
+\end{proof}
+
+
+\section{Problem 4}
+Find the Jordan decomposition of the $n\times n$ lower-triangular matrix
+$$
+\m{
+1 & 0 & 0 & \cdots & \cdots & 0 \\
+1 & 1 & 0 & \cdots & \cdots & 0 \\
+1 & 0 & 1 & \ddots &  & \vdots \\
+\vdots & \vdots & \ddots & \ddots & \ddots & \vdots \\
+1 & 0 & 0 & \cdots & 1 & 0 \\
+1 & 1 & \cdots & 1 & 1 & 1 \\
+}.
+$$
+Note that the first column, last row and main diagonal are filled with 1's. The rest of the matrix is filled with 0's.
+
+\begin{proof}
+Let the decomposition be $M = VJV^{-1}$. We first check $J$. Let $R = M - I$. Clearly the rank of $R$ is 2, implying the dimension of the nullspace of $R$ is $n-2$. That is, there are $n-2$ Jordan blocks in $J$. Hence
+$$J = \m{
+1&1& & & & & \\
+ &1&1& & & & \\
+ & &1& & & & \\
+ & & &1& & & \\
+ & & & &1 & & \\
+ & & & & &\ddots & \\
+ & & & & & &1 \\
+}.$$
+The computation in the last question of HW 7, Track 2 gives the case when $n=4$. Then
+$$V = \m{
+0&0&1&0&0&0\\
+0&1&0&-1/4&-1/4&-1/4\\
+0&1&0&-1/4&-1/4&3/4\\
+0&1&0&3/4&-1/4&-1/4\\
+0&1&0&-1/4&3/4&-1/4\\
+4&1&0&-1/4&-1/4&-1/4\\
+},\quad
+V^{-1} = \m{
+0&-1/4&0&0&0&1/4\\
+0&1/4&1/4&1/4&1/4&0\\
+1&0&0&0&0&0\\
+0&-1&0&1&0&0\\
+0&-1&0&0&1&0\\
+0&-1&1&0&0&0\\
+}.$$
+The cases $n=2, 3$ can be computed similarly. Thus denoting $m=n-2$, we conjecture that for any $n$, it should be
+$$V=\m{
+0 & 0 & 1 & 0 & 0 & \cdots & 0 & 0 \\
+0 & 1 & 0 & -1/m & -1/m & \cdots & -1/m & -1/m \\
+0 & 1 & 0 & -1/m & -1/m & \cdots & -1/m & 1-1/m \\
+0 & 1 & 0 & 1-1/m & -1/m & \cdots & -1/m & -1/m \\
+0 & 1 & 0 & -1/m & 1-1/m & \cdots & -1/m & -1/m \\
+\vdots & \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
+0 & 1 & 0 & -1/m & -1/m & \cdots & 1-1/m & -1/m \\
+n-2 & 1 & 0 & -1/m & -1/m & \cdots & -1/m & -1/m \\
+},$$
+and
+$$V^{-1}=\m{
+0 & -1/m & 0 & 0 & 0 & \cdots & 0 & 1/m \\
+0 & 1/m & 1/m & 1/m & 1/m & \cdots & 1/m & 0 \\
+1 & 0 & 0 & 0 & 0 & \cdots & 0 & 0 \\
+0 & -1 & 0 & 1 & 0 & \cdots & 0 & 0 \\
+0 & -1 & 0 & 0 & 1 & \cdots & 0 & 0 \\
+\vdots & \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
+0 & -1 & 0 & 0 & 0 & \cdots & 1 & 0 \\
+0 & -1 & 1 & 0 & 0 & \cdots & 0 & 0 \\
+}.$$
+A straightforward computation verifies the fact $VV_{-1} = I_n$. Also we have
+$$JV^{-1} = \m{
+1&1& & & & & \\
+ &1&1& & & & \\
+ & &1& & & & \\
+ & & &1& & & \\
+ & & & &1 & & \\
+ & & & & &\ddots & \\
+ & & & & & &1 \\
+}\m{
+0 & -1/m & 0 & 0 & 0 & \cdots & 0 & 1/m \\
+0 & 1/m & 1/m & 1/m & 1/m & \cdots & 1/m & 0 \\
+1 & 0 & 0 & 0 & 0 & \cdots & 0 & 0 \\
+0 & -1 & 0 & 1 & 0 & \cdots & 0 & 0 \\
+0 & -1 & 0 & 0 & 1 & \cdots & 0 & 0 \\
+\vdots & \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
+0 & -1 & 0 & 0 & 0 & \cdots & 1 & 0 \\
+0 & -1 & 1 & 0 & 0 & \cdots & 0 & 0 \\
+}$$
+$$
+=\m{
+0 & 0 & 1/m & 1/m & 1/m & \cdots & 1/m & 1/m \\
+0 & 1/m & 1/m & 1/m & 1/m & \cdots & 1/m & 0 \\
+1 & 0 & 0 & 0 & 0 & \cdots & 0 & 0 \\
+0 & -1 & 0 & 1 & 0 & \cdots & 0 & 0 \\
+0 & -1 & 0 & 0 & 1 & \cdots & 0 & 0 \\
+\vdots & \vdots & \vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+0 & -1 & 0 & 0 & 0 & \cdots & 1 & 0 \\
+0 & -1 & 1 & 0 & 0 & \cdots & 0 & 0 \\
+}.
+$$
+Then it is straightforward to verify that 
+$$VJV^{-1} = M=\m{
+1 & 0 & 0 & \cdots & \cdots & 0 \\
+1 & 1 & 0 & \cdots & \cdots & 0 \\
+1 & 0 & 1 & \ddots &  & \vdots \\
+\vdots & \vdots & \ddots & \ddots & \ddots & \vdots \\
+1 & 0 & 0 & \cdots & 1 & 0 \\
+1 & 1 & \cdots & 1 & 1 & 1 \\
+}.$$
+\end{proof}
+
+\end{document}
